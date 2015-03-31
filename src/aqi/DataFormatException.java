@@ -1,3 +1,5 @@
+package aqi;
+
 /**
  * Created by lenovo on 3/31/2015.
  */
