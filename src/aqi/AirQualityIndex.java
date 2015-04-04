@@ -1,6 +1,7 @@
 package aqi;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 /**
  * Created by lenovo on 3/31/2015.
@@ -10,7 +11,10 @@ import java.util.List;
 public class AirQualityIndex {
 
     // ARRAY LIST FOR RECEIVING DATA
-    List dataList = null;
+    private double[] dataList = null;
+
+    //result array
+    private double[] aqiResult = null;
 
     // ARRAY LIST FOR HOLDING AQI INTERVALS AND CONCENTRATION INTERVALS
     public static final int POLLUTANTCOUNT = 8;
@@ -87,16 +91,57 @@ public class AirQualityIndex {
     }
 
 
-    public AirQualityIndex(List dataList) throws DataFormatException, EmptyDataException {
+    public AirQualityIndex(double[] dataList) throws DataFormatException, EmptyDataException {
         this.dataList = dataList;
 
         if (this.dataList == null)
         {
             throw new EmptyDataException("list supplied is null!");
         }
-        else if (this.dataList.size() < this.POLLUTANTCOUNT)
+        else if (this.dataList.length < this.POLLUTANTCOUNT)
         {
             throw new DataFormatException("Array list should contain concentration of 8 pollutants");
         }
+
+        aqiResult = new double[this.POLLUTANTCOUNT];
+    }
+
+
+    //calculating aqi for a list of pollutants
+    private void calculate(double[] dataList)
+    {
+        for (int i = 0; i < this.POLLUTANTCOUNT; i++)
+        {
+            if (dataList[i] >= 0.0)
+            {
+                aqiResult[i] = aqi(dataList[i], i);
+            }
+            else
+            {
+                aqiResult[i] = -1;
+            }
+        }
+    }
+
+
+    //function for calculating aqi for a pollutant
+    private double aqi(double conc, int j)
+    {
+        Pair concDiff = null;
+        int i;
+        for (i = 0; i < 6; i++)
+        {
+            concDiff = concentration[i][j];
+            if (concDiff.inRange(conc)){
+                break;
+            }
+        }
+
+        Pair aqiDiff = (Pair)aqiInterval.get(i);
+
+        //actual calculation
+        double ans = ( (aqiDiff.getDifference() / concDiff.getDifference()) * (conc - concDiff.getLow()) ) + aqiDiff.getLow();
+
+        return ans;
     }
 }

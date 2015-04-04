@@ -28,9 +28,14 @@ public class Pair{
         this.low = low;
     }
 
-    boolean inRange(float a)
+    boolean inRange(double a)
     {
         if (a >= this.low && a <= this.high) return true;
         return false;
     }
+
+    public double getDifference(){
+        return this.high - this.low;
+    }
+
 }
