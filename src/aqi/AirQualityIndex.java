@@ -21,6 +21,7 @@ public class AirQualityIndex {
     private static List aqiInterval = new ArrayList<Pair>(POLLUTANTCOUNT);
     private static Pair[][] concentration = new Pair[6][8];
 
+    //it is advisable to call this static function  while activity is starting i.e. call this in onStart().
     public static void Init()
     {
         /* 1st row */
@@ -81,7 +82,7 @@ public class AirQualityIndex {
         concentration[5][6] = new Pair(1800,Double.POSITIVE_INFINITY);
         concentration[5][7] = new Pair(3.5,Double.POSITIVE_INFINITY);
 
-        //Hard Coding Data AQI
+        /* Hard Coding Data AQI */
         aqiInterval.add(new Pair(0.0, 50.0));
         aqiInterval.add(new Pair(51,100));
         aqiInterval.add(new Pair(101, 200));
@@ -104,6 +105,7 @@ public class AirQualityIndex {
         }
 
         aqiResult = new double[this.POLLUTANTCOUNT];
+        this.calculate((dataList));
     }
 
 
@@ -143,5 +145,10 @@ public class AirQualityIndex {
         double ans = ( (aqiDiff.getDifference() / concDiff.getDifference()) * (conc - concDiff.getLow()) ) + aqiDiff.getLow();
 
         return ans;
+    }
+
+    public double[] getAqiResult()
+    {
+        return this.aqiResult;
     }
 }
